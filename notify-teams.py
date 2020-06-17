@@ -32,6 +32,8 @@ def create_message(url, notification_type, host, service, alert, output, long_me
       color = 'FF0000'
     elif alert == 'UNKNOWN':
       color = 'FF7F00'
+    elif alert == 'CUSTOM':
+      color = '808080'
     else:
       color = '00FF00'
 
