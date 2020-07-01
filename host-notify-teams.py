@@ -17,8 +17,6 @@ import sys
 import socket
 
 def format_servicelinks(host_name, service = ''):
-  #replace spaces with '+'
-  service_link = str.replace(service, ' ', '+')
   return 'https://%s/nagiosxi/includes/components/xicore/status.php?show=hostdetail&host=%s' % (socket.gethostname(), host_name)
 
 def format_acklinks(host_name, service = ''):
