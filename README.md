@@ -25,15 +25,22 @@ From [Using Office 365 Connectors: Teams](https://docs.microsoft.com/en-us/micro
 
 ### Configure Nagios
 
-Create a command object in the Nagios configuration.
+Create command objects in the Nagios configuration.
 
 ```
 define command {
-    command_name notify_teams
-    command_line /usr/bin/printf "$LONGSERVICEOUTPUT$" | /path/to/script/notify-teams.py  "$NOTIFICATIONTYPE$" "$HOSTALIAS$" "$SERVICEDESC$" "$SERVICESTATE$" "$SERVICEOUTPUT$" $_CONTACTWEBHOOKURL$
+    command_name    notify-host-by-teams
+    command_line    /usr/bin/printf "$LONGSERVICEOUTPUT$" | $USER1$/nagios-teams-notify/host-notify-teams.py  "$NOTIFICATIONTYPE$" "$HOSTNAME$" "$HOSTALIAS$" "$SERVICEDESC$" "$SERVICESTATE$" "$SERVICEOUTPUT$" $_CONTACT_WEBHOOKURL$
 }
 ```
-Create a contact object with the custom variable macro _WEBHOOK set to the URL from the Teams channel connector. This variable is used when running the command above.
+```
+define command {
+    command_name    notify-service-by-teams
+    command_line    /usr/bin/printf "$LONGSERVICEOUTPUT$" | $USER1$/nagios-teams-notify/service-notify-teams.py  "$NOTIFICATIONTYPE$" "$HOSTNAME$" "$HOSTALIAS$" "$SERVICEDESC$" "$SERVICESTATE$" "$SERVICEOUTPUT$" $_CONTACT_WEBHOOKURL$
+}
+```
+
+Create a contact object with the custom variable macro __WEBHOOK set to the URL from the Teams channel connector. This variable is used when running the command above.
 
 ```
 define contact {
@@ -53,4 +60,4 @@ define contact {
 
 Then add the contact to an existing object or contact group and reload your configuration.
 
-Create additional contacts with their own `_WEBHOOKURL` custom variable macro for each Teams channel needing notifications.
+Create additional contacts with their own `__WEBHOOKURL` custom variable macro for each Teams channel needing notifications.

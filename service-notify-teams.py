@@ -3,8 +3,11 @@
 #
 # Author: Isaac J. Galvan
 # Date: 2018-12-04
-#
 # https://github.com/isaac-galvan
+#
+# Enhanced by: Wim Baars
+# Date: 2020-07-01
+# https://github.com/wimb0/nagios-teams-notify
 #
 
 import argparse
