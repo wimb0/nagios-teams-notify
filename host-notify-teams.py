@@ -16,10 +16,14 @@ import requests
 import sys
 import socket
 
-def format_links(host_name, service = ''):
+def format_servicelinks(host_name, service = ''):
   #replace spaces with '+'
   service_link = str.replace(service, ' ', '+')
-  return 'https://%s/nagiosxi/includes/components/xicore/status.php?show=servicedetail&host=%s&service=%s' % (socket.gethostname(), host_name, service_link)
+  return 'https://%s/nagiosxi/includes/components/xicore/status.php?show=servicedetail&host=%s' % (socket.gethostname(), host_name)
+
+def format_acklinks(host_name, service = ''):
+  #replace spaces with '+'
+  return 'https://%s/nagios/cgi-bin/cmd.cgi?cmd_typ=33&host=%s' % (socket.gethostname(), host_name)
 
 def create_message(url, notification_type, host_name, host_alias, service, alert, output, long_message=None):
     ''' creates a dict with for the MessageCard '''
@@ -46,15 +50,21 @@ def create_message(url, notification_type, host_name, host_alias, service, alert
     if long_message:
         message['text'] += '\n\n%s' % (long_message)
 
-    service_link = format_links(host_name, service)
+    service_link = format_servicelinks(host_name)
+    ack_link = format_acklinks(host_name)
     action = [{
       '@context': 'http://schema.org',
       '@type': 'ViewAction',
-            "name": "View in Nagios",
+            "name": "View",
             "target": [service_link]
+    },
+    {
+      '@context': 'http://schema.org',
+      '@type': 'ViewAction',
+            "name": "Acknowledge",
+            "target": [ack_link]
     }]
     message['@type'] = 'MessageCard'
-    #message['@type'] = 'ActionCard'
     message['@context'] = 'https://schema.org/extensions'
     if notification_type != 'ACKNOWLEDGEMENT':
       message['potentialAction'] = action

@@ -50,11 +50,11 @@ define contact {
     service_notifications_enabled   1
     host_notification_period	24x7
     service_notification_period	24x7 
-    host_notification_options	d,u,r,f,s
+    host_notification_options	d,u,r,f
     service_notification_options	w,u,c,r,f
     host_notification_commands	notify_teams
     service_notification_commands	notify_teams
-    _WEBHOOKURL https://webhookurl_generated_by_teams
+    __WEBHOOKURL https://webhookurl_generated_by_teams
     }
 ```
 
