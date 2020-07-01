@@ -33,6 +33,8 @@ def create_message(url, notification_type, host_name, host_alias, service, alert
       color = 'FFFF00'
     elif alert == 'CRITICAL':
       color = 'FF0000'
+    elif alert == 'RECOVERY':
+      color = '00ff00'
     elif alert == 'UNKNOWN':
       color = 'FF7F00'
     else:
