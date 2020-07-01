@@ -13,17 +13,17 @@ import requests
 import sys
 import socket
 
-def format_links(host, service = ''):
+def format_links(host_name, service = ''):
   #replace spaces with '+'
   service_link = str.replace(service, ' ', '+')
-  return 'http://%s/nagios/cgi-bin/cmd.cgi?cmd_typ=34&host=%s&service=%s' % (socket.gethostname(), host, service_link)
+  return 'https://%s/nagiosxi/includes/components/xicore/status.php?show=servicedetail&host=%s&service=%s' % (socket.gethostname(), host_name, service_link)
 
-def create_message(url, notification_type, host, service, alert, output, long_message=None):
+def create_message(url, notification_type, host_name, host_alias, service, alert, output, long_message=None):
     ''' creates a dict with for the MessageCard '''
     message = {}
 
-    message['summary'] = '%s: %s/%s is %s' % (notification_type, host, service, alert)
-    message['title'] = '%s: %s/%s is %s' % (notification_type, host, service, alert)
+    message['summary'] = '%s: %s on %s (%s) is %s' % (notification_type, service, host_name, host_alias, alert)
+    message['title'] = '%s: %s on %s (%s) is %s' % (notification_type, service, host_name, host_alias, alert)
     message['text'] = output
 
     if alert == 'WARNING':
@@ -41,11 +41,11 @@ def create_message(url, notification_type, host, service, alert, output, long_me
     if long_message:
         message['text'] += '\n\n%s' % (long_message)
 
-    service_link = format_links(host, service)
+    service_link = format_links(host_name, service)
     action = [{
       '@context': 'http://schema.org',
       '@type': 'ViewAction',
-            "name": "Acknowledge this alert",
+            "name": "View in Nagios",
             "target": [service_link]
     }]
     message['@type'] = 'MessageCard'
@@ -76,14 +76,15 @@ def main(args):
         print('error no url')
         exit(2)
 
-    host = args.get('host')
+    host_name = args.get('host_name')
+    host_alias = args.get('host_alias')
     notification_type = args.get('type')
     service = args.get('service')
     alert = args.get('alert')
     output = args.get('output')
     long_message = args.get('long_message')
     
-    message_dict = create_message(url, notification_type, host, service, alert, output, long_message)
+    message_dict = create_message(url, notification_type, host_name, host_alias, service, alert, output, long_message)
     message_json = json.dumps(message_dict)
     
     send_to_teams(url, message_json)
@@ -93,7 +94,8 @@ if __name__=='__main__':
     
     parser = argparse.ArgumentParser()
     parser.add_argument('type', action='store', help='notification type')
-    parser.add_argument('host', action='store', help='hostname')
+    parser.add_argument('host_name', action='store', help='host_name')
+    parser.add_argument('host_alias', action='store', help='host_alias')
     parser.add_argument('service', action='store', help='service description')
     parser.add_argument('alert', action='store', help='warning, crit, or ok')
     parser.add_argument('output', action='store', help='output of the check')
@@ -102,7 +104,8 @@ if __name__=='__main__':
     parsedArgs = parser.parse_args()
 
     args['type'] = parsedArgs.type
-    args['host'] = parsedArgs.host
+    args['host_name'] = parsedArgs.host_name
+    args['host_alias'] = parsedArgs.host_alias
     args['service'] = parsedArgs.service
     args['alert'] = parsedArgs.alert
     args['url'] = parsedArgs.url
