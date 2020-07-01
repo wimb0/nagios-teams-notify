@@ -9,7 +9,7 @@ By sending alerts to Teams, we can simplify addition and removal alert recipient
 
 ## Installation
 
-Install dependancies from requirements.txt and place `notify-teams.py` where it can be executed by the Nagios user. Make the script executable with `chmod +x notify-teams.py`.
+Install dependancies from requirements.txt and place `host-notify-teams.py` and `service-notify-teams.py` where they can be executed by the Nagios user. Make the scripts executable with `chmod +x host-notify-teams.py service-notify-teams.py`.
 
 ## Configuration
 
