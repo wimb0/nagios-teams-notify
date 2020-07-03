@@ -17,7 +17,7 @@ import sys
 import socket
 
 
-def create_message(url, notification_type, host_name, host_alias, alert, output, long_message=None):
+def create_message(url, notification_type, host_name, host_alias, alert, output):
     ''' creates a dict with for the MessageCard '''
     message = {}
 
@@ -37,10 +37,6 @@ def create_message(url, notification_type, host_name, host_alias, alert, output,
         color = '808080'
 
     message['themeColor'] = color
-
-    # if not long_message is None:
-    if long_message:
-        message['text'] += '\n\n%s' % (long_message)
 
     host_link = 'https://%s/nagiosxi/includes/components/xicore/status.php?show=hostdetail&host=%s' % (
         socket.gethostname(), host_name)
@@ -84,10 +80,9 @@ def main(args):
     notification_type = args.get('type')
     alert = args.get('alert')
     output = args.get('output')
-    long_message = args.get('long_message')
 
     message_dict = create_message(
-        url, notification_type, host_name, host_alias, alert, output, long_message)
+        url, notification_type, host_name, host_alias, alert, output)
     message_json = json.dumps(message_dict)
 
     send_to_teams(url, message_json)
@@ -114,9 +109,5 @@ if __name__ == '__main__':
     args['alert'] = parsedArgs.alert
     args['url'] = parsedArgs.url
     args['output'] = parsedArgs.output
-
-    if not sys.__stdin__.isatty():
-        args['long_message'] = sys.__stdin__.read()
-        pass
 
     main(args)
